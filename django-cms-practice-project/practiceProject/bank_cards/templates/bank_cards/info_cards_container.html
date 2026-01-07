@@ -1,0 +1,49 @@
+{% load cms_tags %}
+
+<div class="cards" id="cards-widget">
+  <div class="tabs">
+    {% for card in cards %}
+      <button class="tab {% if card == active_card %}active{% endif %}" data-card-id="card-{{ card.pk }}">{{ card.title }}</button>
+    {% endfor %}
+  </div>
+
+  <div class="card-content">
+    {% for card in cards %}
+      <div id="card-{{ card.pk }}" class="card-panel {% if card != active_card %}hidden{% endif %}">
+        {% render_plugin card %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  .hidden {
+    display: none;
+  }
+  .tab.active {
+    font-weight: 700;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const widget = document.getElementById('cards-widget')
+    if (!widget) return
+  
+    const tabs = widget.querySelectorAll('.tab')
+    const panels = widget.querySelectorAll('.card-panel')
+  
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const targetId = tab.dataset.cardId
+  
+        tabs.forEach((t) => t.classList.remove('active'))
+        tab.classList.add('active')
+  
+        panels.forEach((p) => {
+          p.classList.toggle('hidden', p.id !== targetId)
+        })
+      })
+    })
+  })
+</script>

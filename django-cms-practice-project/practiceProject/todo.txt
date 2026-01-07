@@ -1,0 +1,10 @@
+MasterCards task:
+  
+1. Create Models DONE
+2. Craede the Plugins
+3. Create templates
+3.1. render cards as visible if active, not visible otherwise
+3.2. add JS to control visibility on click event
+
+Use is_default to control the default card
+  - in the container controller asure there is only one and one active card
