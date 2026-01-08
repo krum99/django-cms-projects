@@ -1,0 +1,156 @@
+{% load static cms_tags %}
+
+<div class="page-container">
+  <div class="wrapper" data-carousel>
+    <!-- Navigation -->
+    <div class="nav left" data-prev>◀</div>
+    <div class="nav right" data-next>▶</div>
+
+    <!-- Timeline -->
+    <div class="timeline-viewport">
+      <div class="timeline-track" data-track>
+        {% for plugin in instance.child_plugin_instances %}
+          {% render_plugin plugin %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .wrapper {
+    position: relative;
+    width: 100%;
+    /* height: 420px; */
+    overflow: hidden;
+    padding: 60px 80px;
+    border: 2px solid black;
+    border-radius: 5px;
+    color: red;
+    background: #143b7a;
+    font-family: Arial, sans-serif;
+  }
+  
+  .nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    font-size: 20px;
+  }
+  .nav.left {
+    left: 20px;
+  }
+  .nav.right {
+    right: 20px;
+  }
+  
+  .timeline-viewport {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 220px;
+  }
+  
+  .timeline-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    gap: 100px;
+    transition: transform 0.45s ease;
+  }
+  
+  .step {
+    width: 260px;
+    position: relative;
+  }
+  
+  .step-title {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  
+  .step-text {
+    font-size: 14px;
+    opacity: 0.85;
+  }
+  
+  .dot {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: white;
+  }
+  
+  .step:not(.active) .dot {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  
+  .line {
+    position: absolute;
+    top: 86px;
+    left: 14px;
+    height: 2px;
+    width: 4000px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+  
+  .page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    margin: 100px;
+  }
+</style>
+
+<script>
+  ;(function () {
+    const wrapper = document.querySelector('[data-carousel]')
+    if (!wrapper) return
+  
+    const track = wrapper.querySelector('[data-track]')
+    const steps = track.children
+  
+    const visibleCount = 3
+    let focusIndex = 1
+  
+    function update() {
+      ;[...steps].forEach((step, i) => {
+        step.classList.toggle('active', i === focusIndex)
+      })
+  
+      const stepWidth = 260 + 120
+      const start = Math.max(0, Math.min(focusIndex - Math.floor(visibleCount / 2), steps.length - visibleCount))
+  
+      track.style.transform = `translateX(${-start * stepWidth}px)`
+    }
+  
+    wrapper.querySelector('[data-next]').onclick = () => {
+      if (focusIndex < steps.length - 1) {
+        focusIndex++
+        update()
+      }
+    }
+  
+    wrapper.querySelector('[data-prev]').onclick = () => {
+      if (focusIndex > 0) {
+        focusIndex--
+        update()
+      }
+    }
+  
+    update()
+  })()
+</script>
